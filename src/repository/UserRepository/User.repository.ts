@@ -28,7 +28,7 @@ export class UserRepository {
             if(e.code == "ER_DUP_ENTRY"){
                 throw new DuplicateKeyException;
             }
-            throw new e;
+            throw e;
         }
     }
 
@@ -36,7 +36,7 @@ export class UserRepository {
         try {
             return await this.user.query(DATA_QUERY.SELECT_ID_USER, [id]);
         } catch (e) {
-            throw new e;
+            throw e;
         }
     }
 
@@ -44,7 +44,7 @@ export class UserRepository {
         try {
             return await this.user.query(DATA_QUERY.FIND_ALL_USER);
         } catch (e) {
-            throw new e;
+            throw e;
         }
     }
 
@@ -61,7 +61,7 @@ export class UserRepository {
                 user.status,
                 user.id]) == 1 ;
         } catch (e) {
-            throw new e;
+            throw e;
         }
     }
 
@@ -69,7 +69,7 @@ export class UserRepository {
         try {
             return await this.user.query(DATA_QUERY.DELETE_USER, [id]);
         } catch (e) {
-            throw new e;
+            throw e;
         }
     }
 

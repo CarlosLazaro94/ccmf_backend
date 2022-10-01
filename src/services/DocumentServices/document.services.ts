@@ -1,16 +1,17 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { Document } from "src/core/domain/Documents/document.entity";
 import { DocumentRepository } from "src/repository/DocumentRepository/document.repository";
-import { accessSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import * as fs from "fs";
+import { accessSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { FileExistException } from "../../core/exceptions/FileExistException";
 import { Shared } from "../../Utils/shared";
+import { ServerException } from "../../core/exceptions/ServerException";
 
 @Injectable()
 export class DocumentService {
-    pathDir: string = "D:\\tmp\\data\\fileUploads\\"
-    pathImages: string = "D:\\tmp\\data\\imagesUploads\\"
-    shared: Shared
+    pathDir: string = "D:\\tmp\\data\\fileUploads\\";
+    pathImages: string = "D:\\tmp\\data\\imagesUploads\\";
+    shared: Shared;
     constructor(
         private documentRepository: DocumentRepository) {
             this.shared =  new Shared();
@@ -33,12 +34,17 @@ export class DocumentService {
     }
 
     async editDocument(params : any){
-        await this.saveEdit(params.fileName, params.base, this.pathDir);
-        await this.saveEdit(params.nameImage, params.image, this.pathImages);
-        const doc = this.buildDocument(params);
-        doc.status = params.status;
-        doc.id = params.id
-        return await this.documentRepository.edit(doc) ? "UPDATE OK" : "NOT UPDATE";
+        try {
+            const doc = this.buildDocument(params);
+            doc.status = params.status;
+            doc.id = params.id
+            const result = await this.documentRepository.edit(doc) ? "UPDATE OK" : "NOT UPDATE"
+            await this.saveEdit(params.fileName, params.base, this.pathDir);
+            await this.saveEdit(params.nameImage, params.image, this.pathImages);
+            return result;
+        }catch (e){
+            throw new ServerException(e.message);
+        }
     }
 
     async deleteDocument(params: any){
@@ -48,18 +54,18 @@ export class DocumentService {
 
     async createDocument(params: any){
         try{
-            params.base ? await this.saveCreate(params.fileName, params.base, this.pathDir) : "";
-            params.image ? await this.saveCreate(params.nameImage, params.image, this.pathImages): "";
             const doc = this.buildDocument(params);
             doc.status = "1";
-            return await this.documentRepository.create(doc) ? "CREATE OK" : "NOT CREATED";
-        }catch (e){
-            if(e.status == HttpStatus.FORBIDDEN){
+            const result =  await this.documentRepository.create(doc) ? "CREATE OK" : "NOT CREATED";
+            params.base ? await this.saveCreate(params.fileName, params.base, this.pathDir) : "";
+            params.image ? await this.saveCreate(params.nameImage, params.image, this.pathImages): "";
+            return result;
+        }catch (e) {
+            if (e.status == HttpStatus.FORBIDDEN) {
                 throw new FileExistException();
             }
-            throw new e;
+            throw new ServerException(e.message);
         }
-
     }
 
     async download(id: string){
@@ -71,7 +77,7 @@ export class DocumentService {
                 file: file.toString()
             };
         }catch (e){
-            throw new e;
+            throw new ServerException(e.message);
         }
     }
 
@@ -100,7 +106,7 @@ export class DocumentService {
                 writeFileSync(`${pathRouter}`+ fileName, dataBuffer);
             }
         }catch (e) {
-            throw e;
+            throw new ServerException(e.message);
         }
     }
 
@@ -127,7 +133,7 @@ export class DocumentService {
             accessSync(path)
             return readFileSync(path, { encoding:"utf-8"});
         }catch (e) {
-            return e.message
+            throw new ServerException(e.message);
         }
     }
 

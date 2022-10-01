@@ -16,7 +16,7 @@ export class DocumentRepository {
         try {
             return await this.doc.query(DATA_QUERY.FIND_DOCUMENT);
         } catch (e) {
-            console.log(e)
+            throw e;
         }
     }
 
@@ -38,7 +38,7 @@ export class DocumentRepository {
             if(e.code == "ER_DUP_ENTRY"){
                 throw new DuplicateKeyException;
             }
-            throw new e;
+            throw e;
         }
     }
 
@@ -57,7 +57,7 @@ export class DocumentRepository {
                 documentRe.status,
                 documentRe.id]);
         } catch (e) {
-            throw new e;
+            throw e;
         }
     }
 
@@ -65,7 +65,7 @@ export class DocumentRepository {
         try {
             return await this.doc.query(DATA_QUERY.FIND_DOCUMENT_ID, [id]);
         } catch (e) {
-            throw new e;
+            throw e;
         }
     }
 
@@ -73,7 +73,7 @@ export class DocumentRepository {
         try {
             return await this.doc.query(DATA_QUERY.DELETE_DOCUMENT, [id]);
         } catch (e) {
-            throw new e;
+            throw e;
         }
     }
     

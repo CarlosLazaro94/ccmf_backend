@@ -15,7 +15,7 @@ export class EventsRepository {
       try{
         return await this.repository.query(DATA_QUERY.FIND_EVENT)
       }catch (e) {
-        throw new e;
+        throw e;
       }
     }
 
@@ -23,7 +23,7 @@ export class EventsRepository {
       try{
         return await this.repository.query(DATA_QUERY.FIND_EVENT_ID,[id])
       }catch (e) {
-        throw new e;
+        throw e;
       }
     }
 
@@ -46,7 +46,7 @@ export class EventsRepository {
         if(e.code == "ER_DUP_ENTRY"){
           throw new DuplicateKeyException;
         }
-        throw new e;
+        throw e;
       }
 
     }
@@ -67,7 +67,7 @@ export class EventsRepository {
           event.id
         ])
       }catch (e) {
-        throw new e;
+        throw e;
       }
     }
 
@@ -75,7 +75,7 @@ export class EventsRepository {
       try{
         return await  this.repository.query(DATA_QUERY.DELETE_EVENT,[id])
       }catch (e) {
-        throw new e;
+        throw e;
       }
     }
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/core/domain/User/user.entity';
 import { UserRepository } from 'src/repository/UserRepository/User.repository';
+import { ServerException } from "../../core/exceptions/ServerException";
 
 @Injectable()
 export class UserServices {
@@ -19,7 +20,11 @@ export class UserServices {
    * @returns return all user in database
    */
   async getUsers(): Promise<User[]> {
-    return await this.userRepository.findAllUser();
+    try{
+      return await this.userRepository.findAllUser();
+    }catch (e) {
+      throw new ServerException(e.message);
+    }
   }
 
   /**
@@ -27,7 +32,11 @@ export class UserServices {
    * @returns user
    */
   async getByIdUser(params: any): Promise<User[]> {
-    return await this.userRepository.findByIdUser(params.id);
+    try{
+      return await this.userRepository.findByIdUser(params.id);
+    }catch (e) {
+      throw new ServerException(e.message);
+    }
   }
 
   /**
@@ -35,8 +44,12 @@ export class UserServices {
    * @returns ~ "UPDATE OK" or "NOT UPDATE"
    */
   async editUser(user: User): Promise<string> {
-    const result = await this.userRepository.editUser(user[0]);
-    return result ? "UPDATE OK" : "NOT UPDATE";
+    try{
+      const result = await this.userRepository.editUser(user[0]);
+      return result ? "UPDATE OK" : "NOT UPDATE";
+    }catch (e) {
+      throw new ServerException(e.message);
+    }
   }
 
   /**
@@ -44,7 +57,11 @@ export class UserServices {
    * @returns ~ "DELETE OK" or "NOT DELETE"
    */
   async deleteUser(params: any): Promise<string> {
-    const result = await this.userRepository.deleteUser(params.id);
-    return result.affectedRows == 1 ? "DELETE OK" : "NOT DELETE";
+    try{
+      const result = await this.userRepository.deleteUser(params.id);
+      return result.affectedRows == 1 ? "DELETE OK" : "NOT DELETE";
+    }catch (e) {
+      throw new ServerException(e.message);
+    }
   }
 }

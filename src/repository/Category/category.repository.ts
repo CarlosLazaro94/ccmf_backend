@@ -16,7 +16,7 @@ export class CategoryRepository {
       try{
         return await this.repository.query(DATA_QUERY.FIND_CATEGORY);
       }catch (e) {
-        throw new e;
+        throw e;
       }
 
   }
@@ -31,7 +31,7 @@ export class CategoryRepository {
         if(e.code == "ER_DUP_ENTRY"){
           throw new DuplicateKeyException;
         }
-        throw new e;
+        throw e;
       }
   }
 
@@ -42,7 +42,7 @@ export class CategoryRepository {
           category.status
         ])
       }catch (e){
-        throw new e;
+        throw e;
       }
   }
 
@@ -52,7 +52,7 @@ export class CategoryRepository {
         id
       ])
     }catch (e) {
-      throw new e;
+      throw e;
     }
   }
 
@@ -60,7 +60,7 @@ export class CategoryRepository {
     try{
       return await  this.repository.query(DATA_QUERY.DELETE_CATEGORY,[id])
     }catch (e) {
-      throw new e;
+      throw e;
     }
   }
 

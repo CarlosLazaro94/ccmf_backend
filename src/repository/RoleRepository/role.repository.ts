@@ -17,7 +17,7 @@ export class RoleRepository {
       if ((e.code == 'ER_DUP_ENTRY')) {
         throw new DuplicateKeyException();
       }
-      throw new e();
+      throw e();
     }
   }
 
@@ -28,7 +28,7 @@ export class RoleRepository {
         role.status,
         role.id]) == 1;
     } catch (e) {
-      throw new e;
+      throw e;
     }
   }
 
@@ -36,7 +36,7 @@ export class RoleRepository {
     try {
       return this.role.query(DATA_QUERY.FIND_ROLE);
     }catch (e) {
-      throw new e;
+      throw e;
     }
   }
 
@@ -44,7 +44,7 @@ export class RoleRepository {
     try {
       return this.role.query(DATA_QUERY.FIND_ROLE_ID,[id]);
     }catch (e) {
-      throw new e;
+      throw e;
     }
   }
 
@@ -52,7 +52,7 @@ export class RoleRepository {
     try {
       return this.role.query(DATA_QUERY.DELETE_ROLE_ID,[id]);
     }catch (e) {
-      throw new e;
+      throw e;
     }
   }
 }
