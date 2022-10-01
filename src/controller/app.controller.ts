@@ -37,9 +37,9 @@ export class AppController {
 
   }
 
-  @Get("/")
+  @Get("/healthCheck")
   async getHello(@Res() response: Response){
-    return response.send('Hola mundo');
+    return response.status(HttpStatus.OK).json("OK");
   }
   /**
    *
@@ -70,7 +70,7 @@ export class AppController {
    * @param response ~ this object is for inject Response express
    * @returns ~ response create User ok
    */
-
+  @UseGuards(JwtAuthGuard)
   @Post("/user")
   async postUser(@Req() request: Request, @Res() response: Response){
     return response.json(this.message.trace(await this.userServices.createUser(request.body), HttpStatus.CREATED));
@@ -105,21 +105,24 @@ export class AppController {
    * @param response ~ this object is for inject Response express
    * @returns ~ response is array with all documents in database
    */
+  @UseGuards(JwtAuthGuard)
   @Get('/document')
   async getDocument(@Res() response: Response){
     return response.json(this.message.trace(await this.documentServices.getDocuments(), HttpStatus.OK));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get("/document/:id")
   async DocumentById(@Param() param: string ,@Res() response: Response){
     return response.json(this.message.trace( await this.documentServices.getDocumentById(param), HttpStatus.OK));
   }
-
+  @UseGuards(JwtAuthGuard)
   @Post("/document")
   async createDocument(@Req() request: Request,@Res() response: Response){
     return response.json(this.message.trace( await this.documentServices.createDocument(request.body), HttpStatus.CREATED));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put("/document/edit")
   async updateDocument(@Req() request: Request,@Res() response: Response){
     return response.json(this.message.trace( await this.documentServices.editDocument(request.body), HttpStatus.CREATED));
@@ -133,8 +136,9 @@ export class AppController {
     return response.send(data.file)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete("/document/:id")
-  async DeleteById(@Param() param: string ,@Res() response: Response){
+  async DeleteByIdDocument(@Param() param: string ,@Res() response: Response){
     return response.json(this.message.trace( await this.documentServices.deleteDocument(param), HttpStatus.OK));
   }
 

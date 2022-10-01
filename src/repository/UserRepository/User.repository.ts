@@ -42,7 +42,7 @@ export class UserRepository {
 
     async findAllUser(): Promise<User[]> {
         try {
-            return await this.user.find();
+            return await this.user.query(DATA_QUERY.FIND_ALL_USER);
         } catch (e) {
             throw new e;
         }

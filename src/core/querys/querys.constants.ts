@@ -1,5 +1,6 @@
 export const DATA_QUERY = {
     "UPDATE_USER": "UPDATE user AS u SET u.username = ?, u.password = ?, u.name=?, u.lastName =? , u.mail = ? , idRole = ? , u.phone = ?, u.status = ? WHERE u.id = ?",
+    "FIND_ALL_USER": "SELECT * FROM user",
     "SELECT_ID_USER": "SELECT * FROM user WHERE id = ?",
     "DELETE_USER": "DELETE FROM user WHERE id = ?",
     "INSERT_USER": "INSERT INTO user SET username = ?, password = ?, name=?, lastName =? , mail = ? , idRole = ? , phone = ?, status = ?",
