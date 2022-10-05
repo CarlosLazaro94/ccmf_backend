@@ -214,7 +214,7 @@ export class AppController {
 
   @UseGuards(JwtAuthGuard)
   @Put("/category/edit")
-  async editCategory(@Res() request: Request, @Res() response: Response){
+  async editCategory(@Req() request: Request, @Res() response: Response){
     return response.json(this.message.trace(await this.categoryService.editCategory(request.body),HttpStatus.OK));
   }
 

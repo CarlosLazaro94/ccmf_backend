@@ -30,9 +30,9 @@ export class CategoryServices {
       }
     }
 
-    async editCategory(category: Category) {
+    async editCategory(category: any) {
       try{
-        const result = await this.categoryRepository.edit(category[0])
+        const result = await this.categoryRepository.edit(category)
         return result ? "UPDATE OK" : "NOT UPDATE";
       }catch (e){
         throw new ServerException(e.message);
