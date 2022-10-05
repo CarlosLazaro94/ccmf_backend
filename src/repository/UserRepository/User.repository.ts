@@ -50,7 +50,7 @@ export class UserRepository {
 
     async editUser(user: User): Promise<Boolean> {
         try {
-            return await this.user.query(DATA_QUERY.UPDATE_USER, [
+            const result = await this.user.query(DATA_QUERY.UPDATE_USER, [
                 user.username,
                 user.password,
                 user.name,
@@ -59,7 +59,8 @@ export class UserRepository {
                 user.idRole,
                 user.phone,
                 user.status,
-                user.id]) == 1 ;
+                user.id])
+              return result.changedRows == 1;
         } catch (e) {
             throw e;
         }

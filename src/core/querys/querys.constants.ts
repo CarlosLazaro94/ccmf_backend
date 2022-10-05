@@ -21,7 +21,7 @@ export const DATA_QUERY = {
     "FIND_CATEGORY_ID": "SELECT * FROM category WHERE id=?",
     "DELETE_CATEGORY": "DELETE FROM category WHERE id=?",
     "FIND_EVENT": "SELECT * FROM events",
-    "FIND_EVENT_ID": "SELECT * FROM event WHERE id=?",
+    "FIND_EVENT_ID": "SELECT * FROM events WHERE id=?",
     "INSERT_EVENT": "INSERT INTO events SET name = ? , toEvent = ? , site = ? , dateTimeEvent = ?,  contact = ? , organizedBy = ? , url = ? , resume = ? , nameImage= ? , image = ? , status = ?",
     "UPDATE_EVENT": "UPDATE events SET name = ? , to= ? , site = ? , dateTimeEvent = ?,  contact= ? , organizedBy = ? , url = ? , resume = ? , nameImage= ? , image = ? , status = ? WHERE id = ?",
     "DELETE_EVENT": "DELETE FROM events WHERE id = ?",

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany } from "typeorm";
 import { Category } from "../Category/category.entity";
 
 @Entity()
@@ -16,9 +16,10 @@ export class Document {
     @Column()
     publish: string;
 
-    @ManyToOne(()=>Category,category=>category.id)
-    @JoinColumn({name:"idCategory"})
-    idCategory: Category;
+    // @ManyToMany(()=>Category,category=>category.id)
+    // @JoinColumn({name:"idCategory"})
+    @Column()
+    idCategory: string;
 
     @Column()
     description: string;

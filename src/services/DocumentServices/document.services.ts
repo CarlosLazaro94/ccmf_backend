@@ -68,9 +68,9 @@ export class DocumentService {
         }
     }
 
-    async download(id: string){
+    async download(id: any){
         try{
-            const data = await this.documentRepository.findToOne(id);
+            const data = await this.documentRepository.findToOne(id.id);
             const file = this.getFile(`${this.pathDir}`+data[0].fileName);
             return {
                 name: data[0].fileName,
