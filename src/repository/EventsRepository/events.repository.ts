@@ -61,6 +61,7 @@ export class EventsRepository {
           event.contact,
           event.organizedBy,
           event.url,
+          event.resume,
           event.nameImage,
           event.image,
           event.status,

@@ -23,6 +23,6 @@ export const DATA_QUERY = {
     "FIND_EVENT": "SELECT * FROM events",
     "FIND_EVENT_ID": "SELECT * FROM events WHERE id=?",
     "INSERT_EVENT": "INSERT INTO events SET name = ? , toEvent = ? , site = ? , dateTimeEvent = ?,  contact = ? , organizedBy = ? , url = ? , resume = ? , nameImage= ? , image = ? , status = ?",
-    "UPDATE_EVENT": "UPDATE events SET name = ? , to= ? , site = ? , dateTimeEvent = ?,  contact= ? , organizedBy = ? , url = ? , resume = ? , nameImage= ? , image = ? , status = ? WHERE id = ?",
+    "UPDATE_EVENT": "UPDATE events SET name = ? , toEvent= ? , site = ? , dateTimeEvent = ?,  contact= ? , organizedBy = ? , url = ? , resume = ? , nameImage= ? , image = ? , status = ? WHERE id = ?",
     "DELETE_EVENT": "DELETE FROM events WHERE id = ?",
 }

@@ -244,7 +244,7 @@ export class AppController {
 
   @UseGuards(JwtAuthGuard)
   @Put("/event/edit")
-  async editEvent(@Res() request: Request, @Res() response: Response){
+  async editEvent(@Req() request: Request, @Res() response: Response){
     return response.json(this.message.trace(await this.eventService.editEvent(request.body),HttpStatus.OK));
   }
 
