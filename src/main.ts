@@ -4,8 +4,8 @@ import { json, urlencoded } from "express";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(json({ limit: '1mb' }))
-  app.use(urlencoded({ extended: true, limit: '1mb' }));
+  app.use(json({ limit: '100mb' }))
+  app.use(urlencoded({ extended: true, limit: '100mb', parameterLimit: 50000}));
   app.enableCors();
   await app.listen(process.env.PORT || 3000);
 }

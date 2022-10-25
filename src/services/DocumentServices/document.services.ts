@@ -2,10 +2,12 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import { Document } from "src/core/domain/Documents/document.entity";
 import { DocumentRepository } from "src/repository/DocumentRepository/document.repository";
 import * as fs from "fs";
-import { accessSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { accessSync, existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "fs";
 import { FileExistException } from "../../core/exceptions/FileExistException";
 import { Shared } from "../../Utils/shared";
 import { ServerException } from "../../core/exceptions/ServerException";
+import * as  moment from "moment-timezone";
+
 
 @Injectable()
 export class DocumentService {
@@ -35,12 +37,14 @@ export class DocumentService {
 
     async editDocument(params : any){
         try {
-            const doc = this.buildDocument(params);
+            const newYork = moment().tz("America/Lima")
+            const dateform = newYork.format("YYYY-MM-DDTHH")
+            const doc = this.buildDocument(params, dateform);
             doc.status = params.status;
             doc.id = params.id
             const result = await this.documentRepository.edit(doc) ? "UPDATE OK" : "NOT UPDATE"
-            await this.saveEdit(params.fileName, params.base, this.pathDir);
-            await this.saveEdit(params.nameImage, params.image, this.pathImages);
+            await this.saveEdit(this.fileName(params.fileName,dateform), params.base, this.pathDir);
+            await this.saveEdit(this.fileName(params.nameImage,dateform), params.image, this.pathImages);
             return result;
         }catch (e){
             throw new ServerException(e.message);
@@ -48,17 +52,22 @@ export class DocumentService {
     }
 
     async deleteDocument(params: any){
-        const result = await this.documentRepository.delete(params.id)
+        const document = await this.documentRepository.findToOne(params.id);
+        const result = await this.documentRepository.delete(params.id);
+        const filePath= document[0].filePath;
+        unlinkSync(filePath)
         return result.affectedRows == 1 ? "DELETE OK" : "NOT DELETE";
     }
 
     async createDocument(params: any){
         try{
-            const doc = this.buildDocument(params);
+            const newYork = moment().tz("America/Lima")
+            const dateform = newYork.format("YYYY-MM-DDTHH")
+            const doc = this.buildDocument(params, dateform);
             doc.status = "1";
             const result =  await this.documentRepository.create(doc) ? "CREATE OK" : "NOT CREATED";
-            params.base ? await this.saveCreate(params.fileName, params.base, this.pathDir) : "";
-            params.image ? await this.saveCreate(params.nameImage, params.image, this.pathImages): "";
+            params.base ? await this.saveCreate(this.fileName(params.fileName, dateform), params.base, this.pathDir) : "";
+            params.image ? await this.saveCreate(this.fileName(params.nameImage, dateform), params.image, this.pathImages): "";
             return result;
         }catch (e) {
             if (e.status == HttpStatus.FORBIDDEN) {
@@ -97,10 +106,9 @@ export class DocumentService {
     private save(pathRouter:string, fileName: string, dataBuffer: any ){
         try{
             if(pathRouter == this.pathDir){
-                writeFileSync(`${pathRouter}`+ fileName, dataBuffer
-                    .toString("ascii"),{
-                      encoding: "utf-8"
-                  }
+                writeFileSync(
+                  `${pathRouter}`+ fileName,
+                    dataBuffer,{ encoding: "binary" }
                 );
             }else{
                 writeFileSync(`${pathRouter}`+ fileName, dataBuffer);
@@ -118,8 +126,8 @@ export class DocumentService {
         if (!exits) {
             if (pathRouter == this.pathDir) {
                 writeFileSync(`${pathRouter}` + fileName, dataBuffer
-                    .toString("ascii"), {
-                      encoding: "utf-8"
+                    , {
+                      encoding: "binary"
                   }
                 );
             } else {
@@ -131,25 +139,31 @@ export class DocumentService {
     private getFile(path: string){
         try{
             accessSync(path)
-            return readFileSync(path, { encoding:"utf-8"});
+            return readFileSync(path, { encoding:"binary"});
         }catch (e) {
             throw new ServerException(e.message);
         }
     }
 
 
-    private buildDocument(params: any){
+    private buildDocument(params: any, dateform :string ){
         const doc = new Document();
         doc.name = params.name ? params.name : "" ;
         doc.author = params.author ?  params.author : "";
         doc.publish = params.publish ?  params.publish : "";
         doc.idCategory = params.idCategory ?  params.idCategory : "";
-        doc.fileName = params.fileName ? params.fileName : "";
+        doc.fileName = params.fileName ? this.fileName(params.fileName,dateform) : "";
         doc.description = params.description ? params.description : "";
-        doc.filePath = params.fileName ?  this.pathDir + params.fileName : "";
-        doc.nameImage = params.nameImage ? params.nameImage : "";
-        doc.image = params.nameImage ? this.pathImages + params.nameImage : "";
+        doc.filePath = params.fileName ?  this.pathDir + this.fileName(params.fileName,dateform) : "";
+        doc.nameImage = params.nameImage ? this.fileName(params.nameImage,dateform) : "";
+        doc.image = params.nameImage ? this.pathImages + this.fileName(params.nameImage,dateform) : "";
         return doc;
     }
 
+    private fileName(fileName: String, dateForm:string){
+        const result = fileName.split(".")
+        const name = result[0];
+        const mineType = result[1];
+        return name + "-" + dateForm + "." + mineType;
+    }
 }

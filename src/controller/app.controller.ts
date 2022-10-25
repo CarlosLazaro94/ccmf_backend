@@ -132,7 +132,7 @@ export class AppController {
   async downloadDocument(@Param() param: string ,@Res() response: Response){
     const data = await this.documentServices.download(param);
     response.set("Content-Disposition", "attachment;filename="+data.name)
-    response.set("Content-Type", "text/*");
+    response.set("Content-Type", "application/*");
     return response.send(data.file)
   }
 
