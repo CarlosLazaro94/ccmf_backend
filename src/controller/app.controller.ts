@@ -105,7 +105,6 @@ export class AppController {
    * @param response ~ this object is for inject Response express
    * @returns ~ response is array with all documents in database
    */
-  @UseGuards(JwtAuthGuard)
   @Get('/document')
   async getDocument(@Res() response: Response){
     return response.json(this.message.trace(await this.documentServices.getDocuments(), HttpStatus.OK));
@@ -128,12 +127,31 @@ export class AppController {
     return response.json(this.message.trace( await this.documentServices.editDocument(request.body), HttpStatus.CREATED));
   }
 
-  @Post("/document/download/:id")
-  async downloadDocument(@Param() param: string ,@Res() response: Response){
-    const data = await this.documentServices.download(param);
+  @Post("/document/download/pdf/:id")
+  async downloadDocumentPdf(@Param() param: string ,@Res() response: Response){
+    const data = await this.documentServices.download(param,"pdf");
     response.set("Content-Disposition", "attachment;filename="+data.name)
     response.set("Content-Type", "application/*");
-    return response.send(data.file)
+    response.write(data.file,'binary')
+    response.end()
+  }
+
+  @Post("/document/download/img/:id")
+  async downloadDocumentImg(@Param() param: string ,@Res() response: Response){
+    const data = await this.documentServices.download(param,"img");
+    response.set("Content-Disposition", "attachment;filename="+data.name)
+    response.set("Content-Type", "image/*");
+    response.write(data.file,'binary')
+    response.end()
+  }
+
+  @Post("/document/download/event/:id")
+  async downloadDocumentEvent(@Param() param: string ,@Res() response: Response){
+    const data = await this.documentServices.download(param,"event");
+    response.set("Content-Type", "image/*");
+    response.set("Content-Disposition", "attachment;filename="+data.name)
+    response.write(data.file,'binary')
+    response.end()
   }
 
   @UseGuards(JwtAuthGuard)

@@ -7,7 +7,7 @@ import { EventsRepository } from "../../../repository/EventsRepository/events.re
 @Module({
   imports: [TypeOrmModule.forFeature([Events])],
   providers: [EventsServices, EventsRepository],
-  exports: [EventsServices]
+  exports: [EventsServices,EventsRepository]
 })
 
 export class EventsModule { }

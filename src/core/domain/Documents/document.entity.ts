@@ -4,7 +4,7 @@ import { Category } from "../Category/category.entity";
 @Entity()
 export class Document {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('identity')
     id: number;
 
     @Column()

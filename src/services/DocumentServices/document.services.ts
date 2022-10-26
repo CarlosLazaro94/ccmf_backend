@@ -7,15 +7,17 @@ import { FileExistException } from "../../core/exceptions/FileExistException";
 import { Shared } from "../../Utils/shared";
 import { ServerException } from "../../core/exceptions/ServerException";
 import * as  moment from "moment-timezone";
+import { EventsRepository } from "../../repository/EventsRepository/events.repository";
 
 
 @Injectable()
 export class DocumentService {
     pathDir: string = "D:\\tmp\\data\\fileUploads\\";
     pathImages: string = "D:\\tmp\\data\\imagesUploads\\";
+    pathEvents: string = "D:\\tmp\\data\\imagesEvents\\";
     shared: Shared;
     constructor(
-        private documentRepository: DocumentRepository) {
+        private documentRepository: DocumentRepository, private eventRepository: EventsRepository) {
             this.shared =  new Shared();
     }
 
@@ -37,8 +39,8 @@ export class DocumentService {
 
     async editDocument(params : any){
         try {
-            const newYork = moment().tz("America/Lima")
-            const dateform = newYork.format("YYYY-MM-DDTHH")
+            // const data = await this.documentRepository.findToOne(params.id)
+            const dateform = Date.now().toString();
             const doc = this.buildDocument(params, dateform);
             doc.status = params.status;
             doc.id = params.id
@@ -61,8 +63,7 @@ export class DocumentService {
 
     async createDocument(params: any){
         try{
-            const newYork = moment().tz("America/Lima")
-            const dateform = newYork.format("YYYY-MM-DDTHH")
+            const dateform = Date.now().toString()
             const doc = this.buildDocument(params, dateform);
             doc.status = "1";
             const result =  await this.documentRepository.create(doc) ? "CREATE OK" : "NOT CREATED";
@@ -77,13 +78,29 @@ export class DocumentService {
         }
     }
 
-    async download(id: any){
+    async download(id: any, typeData: string){
         try{
             const data = await this.documentRepository.findToOne(id.id);
-            const file = this.getFile(`${this.pathDir}`+data[0].fileName);
+            let fileName = ""
+            let file;
+            switch(typeData){
+                case "pdf":
+                    fileName = data[0].fileName
+                    file = this.getFile(`${this.pathDir}`+ fileName);
+                    break;
+                case "img":
+                    fileName = data[0].nameImage
+                    file = this.getImage(`${this.pathImages}`+fileName);
+                    break;
+                case "event":
+                    const repoEvents = await this.eventRepository.findToOne(id.id)
+                    fileName = repoEvents[0].nameImage
+                    file = this.getImage(`${this.pathEvents}`+ repoEvents[0].nameImage);
+                    break;
+            }
             return {
-                name: data[0].fileName,
-                file: file.toString()
+                name: fileName,
+                file: file
             };
         }catch (e){
             throw new ServerException(e.message);
@@ -145,7 +162,15 @@ export class DocumentService {
         }
     }
 
+    private getImage(path: string){
+        try{
+            accessSync(path)
+            return   readFileSync(path,{encoding:'binary'});
+        }catch (e) {
+            throw new ServerException(e.message);
+        }
 
+    }
     private buildDocument(params: any, dateform :string ){
         const doc = new Document();
         doc.name = params.name ? params.name : "" ;
