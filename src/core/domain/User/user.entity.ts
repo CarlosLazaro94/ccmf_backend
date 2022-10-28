@@ -4,7 +4,7 @@ import { Role } from '../Role/role.entity';
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn('identity')
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Unique("uniqueUsername",['user'])
