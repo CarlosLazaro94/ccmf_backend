@@ -34,6 +34,7 @@ export class DocumentService {
         const result = await this.documentRepository.findToOne(params.id);
         result.map(el => {
             el.image = this.shared.getFileBase64(el.image) ? this.shared.getFileBase64(el.image) : "NO EXIST" ;
+            el['base'] = this.shared.getFileBase64(el.filePath) ? this.shared.getFileBase64(el.filePath) : "NO EXIST" ;
         })
         return result;
     }
