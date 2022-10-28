@@ -7,7 +7,7 @@ async function bootstrap() {
   app.use(json({ limit: '100mb' }))
   app.use(urlencoded({ extended: true, limit: '100mb', parameterLimit: 50000}));
   app.enableCors({
-    origin: 'https://backend-ccmf.herokuapp.com/',
+    origin: '*',
     methods: 'GET, PUT, POST, DELETE',
     allowedHeaders: 'Content-Type, Authorization',
   });
