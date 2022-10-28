@@ -132,6 +132,11 @@ export class AppController {
     const data = await this.documentServices.download(param,"pdf");
     response.set("Content-Disposition", "attachment;filename="+data.name)
     response.set("Content-Type", "application/*");
+    response.header("Access-Control-Allow-Origin", "*")
+    response.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested, Content-Type, Accept Authorization"
+    )
     response.write(data.file,'binary')
     response.end()
   }
@@ -141,6 +146,11 @@ export class AppController {
     const data = await this.documentServices.download(param,"img");
     response.set("Content-Disposition", "attachment;filename="+data.name)
     response.set("Content-Type", "image/*");
+    response.header("Access-Control-Allow-Origin", "*")
+    response.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested, Content-Type, Accept Authorization"
+    )
     response.write(data.file,'binary')
     response.end()
   }
@@ -150,6 +160,11 @@ export class AppController {
     const data = await this.documentServices.download(param,"event");
     response.set("Content-Type", "image/*");
     response.set("Content-Disposition", "attachment;filename="+data.name)
+    response.header("Access-Control-Allow-Origin", "*")
+    response.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested, Content-Type, Accept Authorization"
+    )
     response.write(data.file,'binary')
     response.end()
   }
