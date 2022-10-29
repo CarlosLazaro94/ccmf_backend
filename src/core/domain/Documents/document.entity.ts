@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn} from "typeorm";
 import { Category } from "../Category/category.entity";
 
 @Entity()
 export class Document {
 
-    @PrimaryGeneratedColumn('increment')
+    @PrimaryGeneratedColumn('increment',{type: "int"})
     id: number;
 
     @Column()

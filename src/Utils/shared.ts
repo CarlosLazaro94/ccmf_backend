@@ -10,9 +10,12 @@ export class Shared {
   public getFileBase64(path: string){
     try {
       accessSync(path)
-      return readFileSync(path, { encoding:"base64"});
+      const result =  readFileSync(path,{encoding:"base64"});
+      // const data = Buffer.from(result).toString('base64');
+      // const data2 = Buffer.from(data, "binary").toString('base64');
+      return result;
     }catch (e){
-      return e.message
+      return e.message;
     }
   }
 

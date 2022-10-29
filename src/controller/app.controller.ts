@@ -110,7 +110,7 @@ export class AppController {
     return response.json(this.message.trace(await this.documentServices.getDocuments(), HttpStatus.OK));
   }
 
-  @UseGuards(JwtAuthGuard)
+
   @Get("/document/:id")
   async DocumentById(@Param() param: string ,@Res() response: Response){
     return response.json(this.message.trace( await this.documentServices.getDocumentById(param), HttpStatus.OK));
@@ -137,7 +137,7 @@ export class AppController {
       "Access-Control-Allow-Headers",
       "Origin, X-Requested, Content-Type, Accept Authorization"
     )
-    response.write(data.file,'binary')
+    response.write(data.file,'base64')
     response.end()
   }
 
@@ -151,7 +151,7 @@ export class AppController {
       "Access-Control-Allow-Headers",
       "Origin, X-Requested, Content-Type, Accept Authorization"
     )
-    response.write(data.file,'binary')
+    response.write(data.file,'base64')
     response.end()
   }
 
@@ -165,7 +165,7 @@ export class AppController {
       "Access-Control-Allow-Headers",
       "Origin, X-Requested, Content-Type, Accept Authorization"
     )
-    response.write(data.file,'binary')
+    response.write(data.file,'base64')
     response.end()
   }
 
@@ -257,13 +257,11 @@ export class AppController {
     return response.json(this.message.trace(await this.categoryService.deleteCategory(params),HttpStatus.OK));
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get("/event")
   async getEvent(@Res() response: Response){
     return response.json(this.message.trace(await this.eventService.getEvents(),HttpStatus.OK));
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get("/event/:id")
   async getEventId(@Param() params: string, @Res() response: Response){
     return response.json(this.message.trace(await this.eventService.getEventId(params),HttpStatus.OK));
